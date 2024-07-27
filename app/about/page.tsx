@@ -1,10 +1,74 @@
-const AboutPage = ()=>{
-    return (
-        <>
-        <h1>About PAge</h1>
-        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Inventore libero necessitatibus asperiores enim blanditiis eum officiis fugit hic quaerat molestias, quisquam illum quae veniam distinctio laborum laboriosam nam, reiciendis nisi odit nesciunt eveniet ex. Doloribus quae sapiente in placeat autem exercitationem fugiat hic at nemo distinctio ratione mollitia voluptates deserunt harum, laboriosam ipsum libero beatae doloremque atque unde a suscipit provident dolorum. Molestiae a aliquam repellendus ut similique debitis laborum libero quibusdam in beatae eaque praesentium necessitatibus sed ullam, suscipit minus. Enim, ab maxime quisquam, labore minus corporis ipsam cum perferendis molestias repellendus veritatis illum saepe modi dolores. Quaerat possimus perspiciatis maxime velit quod! Sed cumque temporibus rem porro molestias doloribus unde fugiat explicabo? Itaque, velit esse cupiditate modi recusandae repudiandae dolores temporibus at, rem reiciendis ea assumenda maxime beatae iste repellat. Ex provident veritatis accusantium nam sed at, harum dicta possimus blanditiis aut. Pariatur odio consectetur perspiciatis rerum esse, eum, quis nostrum delectus corrupti hic ex odit veniam quod excepturi libero sint facilis harum! Suscipit dolores minima quaerat ratione tenetur cum repellendus adipisci numquam voluptatem, facere vel nesciunt hic labore ut? Ducimus id perferendis enim cumque quae dolor officia corrupti nostrum beatae commodi, velit aliquam repellat aliquid quidem aspernatur. Vel ducimus nulla, modi dignissimos numquam distinctio id ipsa soluta similique obcaecati fugiat rem in maxime perferendis labore suscipit accusamus! Similique, adipisci eaque laboriosam veniam itaque mollitia blanditiis nesciunt, repellendus necessitatibus delectus fugiat accusamus quas labore quia architecto vero. Rerum, incidunt! Repudiandae, cupiditate! Nam quidem omnis dolor tenetur est magnam harum incidunt culpa soluta inventore placeat ex eveniet quis, eum et ipsa voluptas expedita laboriosam sit assumenda alias eaque repudiandae deleniti. Autem dignissimos consectetur mollitia est consequatur voluptate numquam alias nemo cum porro dicta molestiae nulla velit adipisci ex vero odit aspernatur reiciendis dolores, quas eum aut quos vitae laboriosam! Magnam nisi et corporis ullam, laudantium nesciunt, minus expedita error non deleniti incidunt voluptatem ipsam voluptatum cum numquam dolores animi eaque debitis! Eum aliquid inventore aut nisi eaque ipsa id suscipit accusamus modi fugit totam, doloribus vel consequatur facere nulla corrupti perferendis? Debitis tenetur blanditiis placeat labore ipsa veniam modi facere, distinctio quasi unde incidunt eveniet obcaecati dicta! Quisquam unde iste doloribus quod qui eaque. Nulla architecto officia ab cum quos obcaecati aspernatur explicabo in? Consequuntur libero amet, perspiciatis, placeat beatae possimus aliquam laudantium voluptates odio exercitationem, eaque inventore officia. Omnis maiores incidunt necessitatibus voluptate aspernatur ducimus, quod tempore odit?</p>
-        </>
-    )
+"use client";
+import { useEffect, useState } from "react";
+interface DataType {
+    id: number;
+  userId: number;
+  title: string;
+  body: string;
 }
+const AboutPage = () => {
+  const [data, setData] = useState<DataType[]>([]);
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(`${process.env.API_URL}/posts`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await res.json();
+      setData(result);
+    })();
+  }, []);
 
-export default AboutPage
+  return (
+    <div className="w-[90%] mx-auto mt-12">
+      <h1 className="text-2xl font-bold text-center py-6 ">About PAge</h1>
+      <p className="py-2">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestiae unde consequatur tempora saepe officia. Amet, voluptatibus? Deserunt autem odio quae veniam sunt rerum minima, id incidunt velit ipsam molestias in!</p>
+      <div className="relative overflow-x-auto">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                Id
+              </th>
+              <th scope="col" className="px-6 py-3">
+                title
+              </th>
+              <th scope="col" className="px-6 py-3">
+                body
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.length > 0 &&
+              data?.map((value, index) => (
+                <tr
+                  key={index}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {value?.id}
+                  </th>
+                  <td className="px-6 py-4">{value?.title}</td>
+                  <td className="px-6 py-4">{value?.body}</td>
+                  <td className="px-6 py-4">View</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+        {data.length <= 0 && (
+          <h1 className="text-white text-center text-lg py-3 font-semibold">Loading...</h1>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AboutPage;
